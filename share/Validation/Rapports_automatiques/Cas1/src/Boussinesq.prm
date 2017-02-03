@@ -1,0 +1,99 @@
+Parameters {
+	Title "Boussinesq 2D calculation"
+	Author "fauchet"
+	VersionTrio_U 1.7.4
+ 	TestCase . Boussinesq.data
+}
+
+Chapter {
+	Title "Convergence" 
+
+	figure { 
+		title "Evolution of residue"
+		include_description_curves 0
+		labelX "TIME"
+		labelY "residu=max|Ri|"
+		logY
+		curve {
+			file Boussinesq.dt_ev
+			columns ($1) ($4)
+			style linespoints
+		}
+	}
+}
+
+Chapter {
+	Title "Visualization via VisIt" 
+
+	visu {
+		title "MESH"
+		mesh Boussinesq.lata dom
+	}
+
+	visu {
+		title "TEMPERATURE SOM"
+		pseudocolor Boussinesq.lata dom TEMPERATURE SOM
+	}
+
+	visu {
+		title "CONCENTRATION SOM"
+		pseudocolor Boussinesq.lata dom CONCENTRATION SOM
+	}
+
+}
+
+Chapter {
+	Title "Visualization via Gnuplot" 
+
+	figure { 
+		title "avancement MOY"
+		include_description_curves 0
+		labelX "TIME"
+		labelY ""
+		curve {
+			legend ""
+			file Boussinesq_CMOY.son
+			columns ($1) (1-$2)
+			style linespoints
+		}
+	}
+
+	figure { 
+		title "Q"
+		include_description_curves 0
+		labelX "TIME"
+		logy
+		curve {
+			file Boussinesq_QCHIMIE.son
+			columns ($1) ($2*2500*1015.*1e-3)
+			legend qchimie
+			style linespoints
+		}
+
+		curve {
+		legend "-QCONV"
+			file Boussinesq_QCONV.son
+			columns ($1) (-$2*2500*1015.*1e-3)
+			style linespoints
+		}
+		curve {
+		legend "Q0"
+			file Boussinesq_Q0.son
+			columns ($1) ($2*2500*1015.*1e-3)
+			style linespoints
+		}
+	}
+
+	figure { 
+		title "TMOY"
+		include_description_curves 0
+		labelX "TIME"
+		labelY "TMOY"
+		curve {
+			file Boussinesq_TM.son
+			style linespoints
+		}
+	}
+
+}
+
