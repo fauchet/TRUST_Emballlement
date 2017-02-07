@@ -1,0 +1,261 @@
+Parameters {
+	Title "Boussinesq 2D calculation"
+	Author "fauchet"
+	VersionTrio_U 1.7.4
+ 	TestCase . Boussinesq.data
+}
+
+Chapter {
+	Title "Convergence" 
+
+	figure { 
+		title "Evolution of residue"
+		include_description_curves 0
+		labelX "TIME"
+		labelY "residu=max|Ri|"
+		logY
+		curve {
+			file Boussinesq.dt_ev
+			columns ($1) ($4)
+			style linespoints
+		}
+	}
+}
+
+Chapter {
+	Title "Visualization via VisIt" 
+
+	visu {
+		title "MESH"
+		mesh Boussinesq.lata dom
+	}
+
+	visu {
+		title "TEMPERATURE SOM"
+		pseudocolor Boussinesq.lata dom TEMPERATURE SOM
+	}
+
+	visu {
+		title "CONCENTRATION SOM"
+		pseudocolor Boussinesq.lata dom CONCENTRATION SOM
+	}
+
+}
+
+Chapter {
+	Title "Visualization via Gnuplot" 
+
+	figure { 
+		title "avancement MOY"
+		include_description_curves 0
+		labelX "TIME"
+		labelY ""
+		curve {
+			legend ""
+			file Boussinesq_CMOY.son
+			columns ($1) (1-$2)
+			style linespoints
+		}
+		curve {
+            legend Comsol
+            file comsol.txt
+            colonnes 1 2
+            style lines
+		}
+	}
+
+	figure { 
+		title "Q"
+		include_description_curves 0
+		labelX "TIME"
+		logy
+		curve {
+			file Boussinesq_QCHIMIE.son
+			columns ($1) ($2*2500*1015.)
+			legend qchimie
+			style linespoints
+		}
+
+		curve {
+		legend "-QCONV"
+			file Boussinesq_QCONV.son
+			columns ($1) (-$2*2500*1015.)
+			style linespoints
+		}
+		curve {
+		legend "Q0"
+			file Boussinesq_Q0.son
+			columns ($1) ($2*2500*1015.)
+			style linespoints
+		}
+		curve {
+		legend Q_chimie comsol
+            file comsol.txt
+            colonnes 1 7
+            style lines
+	
+		}
+		curve {
+		legend -QCONV comsol
+	        file comsol.txt
+            colonnes 1 5
+            style lines
+		
+		}
+		curve {
+	        file comsol.txt
+            colonnes 1 4
+            style lines
+		legend Q0 comsol
+		}
+		
+	}
+	figure {
+                title "Zoom Qchimie"
+                include_description_curves 0
+                labelX "TIME"
+                rangex 0 20
+                rangey  1e4 1e6
+                logy
+                curve { 
+                        file Boussinesq_QCHIMIE.son
+                        columns ($1) ($2*2500*1015.)
+                        legend qchimie
+                        style linespoints
+                }
+                curve {
+                legend Q_chimie comsol
+            file comsol.txt
+            colonnes 1 6
+            style lines
+                }
+                curve {
+                legend Q_chimie comsol v2
+            file comsol.txt
+            colonnes 1 7
+            style lines
+                }
+	}
+	figure { 
+		title "TMOY"
+		include_description_curves 0
+		labelX "TIME"
+		labelY "TMOY"
+		curve {
+			file Boussinesq_TM.son
+			style linespoints
+		}
+		curve
+		{
+	        file comsol.txt
+            colonnes 1 3
+            style lines
+		    legend Comsol
+    	}
+	}
+
+
+figure {
+    title T 2s
+    labelx mm
+    labely ""
+    include_description_curves 0
+    curve {
+        file T_CoupesTransverse_instant_2s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq T 2.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 $2
+        style lines
+    }
+}
+
+figure {
+    title T 5s
+    labelx mm
+    labely ""
+    include_description_curves 0
+    curve {
+        file T_CoupesTransverse_instant_5s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq T 5.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 $2
+        style lines
+    }
+}
+figure {
+    title T 100s
+    labelx mm
+    labely ""
+    include_description_curves 0
+     curve {
+        file T_CoupesTransverse_instant_100s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq T 100.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 $2
+        style lines
+    }
+}	
+	figure {
+    title Alpha 2s
+    labelx mm
+    labely ""
+    include_description_curves 0
+    curve {
+        file alpha_CoupesTransverse_instant_2s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq C 2.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 (1-$2)
+        style lines
+    }
+}
+figure {
+    title Alpha 5s
+    labelx mm
+    labely ""
+    include_description_curves 0
+    curve {
+        file alpha_CoupesTransverse_instant_5s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq C 5.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 (1-$2)
+        style lines
+    }
+}
+figure {
+    title Alpha 100s
+    labelx mm
+    labely ""
+    include_description_curves 0
+    curve {
+        file alpha_CoupesTransverse_instant_100s.txt
+        legend comsol
+        colonnes ($1) ($3)
+    }
+    curve {
+        segment Boussinesq C 100.
+        legend TRUST
+        colonnes ($1+0.05)*1e3 (1-$2)
+        style lines
+    }
+}
+}
