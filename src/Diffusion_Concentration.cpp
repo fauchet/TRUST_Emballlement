@@ -14,49 +14,43 @@
 *****************************************************************************/
 /////////////////////////////////////////////////////////////////////////////
 //
-// File      : Puissance_convection_base.h
+// File      : Diffusion_Concentration.cpp
 // Directory : $EMBALLEMENT_ROOT/src
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef Puissance_convection_base_included
-#define Puissance_convection_base_included
+#include <Diffusion_Concentration.h>
+#include <Param.h>
 
-#include <Source_base.h>
-#include <DoubleTab.h>
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// .DESCRIPTION : class Puissance_convection_base
-//
-// <Description of class Puissance_convection_base>
-//
-/////////////////////////////////////////////////////////////////////////////
-
-class Puissance_convection_base : public Source_base
+Implemente_instanciable( Diffusion_Concentration, "Diffusion_Concentration", Convection_Diffusion_Concentration ) ;
+// XD diffusion_concentration eqn_base diffusion_concentration 1 d/dt C = div(D grad c) +S
+// XD attr convection suppress_param convection 1 not_set
+Sortie& Diffusion_Concentration::printOn( Sortie& os ) const
 {
+  Convection_Diffusion_Concentration::printOn( os );
+  return os;
+}
 
-  Declare_base( Puissance_convection_base ) ;
+Entree& Diffusion_Concentration::readOn( Entree& is )
+{
+  assert(la_concentration.non_nul());
 
-public :
-  virtual DoubleTab& ajouter(DoubleTab& ) const;
-  virtual DoubleTab& calculer(DoubleTab& ) const;
-  virtual void mettre_a_jour(double temps);
-  virtual void completer();
-  virtual void contribuer_a_avec(const DoubleTab&, Matrice_Morse&) const ;
+  Convection_Diffusion_std::readOn(is);
+  Nom nom;
+  nom="Diffusion_";
+  nom+=inconnue().le_nom();
+  terme_diffusif.set_fichier(nom);
+  terme_diffusif.set_description((Nom)"Diffusion mass transfer rate=Integral(alpha*grad(C)*ndS) [m"+(Nom)(dimension+bidim_axi)+".Mol.s-1]");
+  return is;
 
-protected :
-  virtual void associer_zones(const Zone_dis& ,const Zone_Cl_dis& ) ;
-  virtual void associer_pb(const Probleme_base& ) ;
-  DoubleVect volumes_;
+}
+void Diffusion_Concentration::set_param(Param& param)
+{
+  Convection_Diffusion_Concentration::set_param(param);
+  param.supprimer_condition("condition_2");
 
-  double  hconv_,epsilon_,Tamb_,Stefan_;
-  double rhocp_;
-
-  virtual void remplir_volumes() =0;
-  int implicite_,is_scheme_implicite_;
-  DoubleTab T_old_;
-  double temps_;
-};
-
-#endif /* Puissance_convection_base_included */
+}
+int Diffusion_Concentration::nombre_d_operateurs() const
+{
+  return 1;
+}

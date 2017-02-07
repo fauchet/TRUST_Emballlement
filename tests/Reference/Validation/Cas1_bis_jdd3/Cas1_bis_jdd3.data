@@ -2,25 +2,29 @@
 # PARALLEL OK 8 #
 dimension 2
 
-Pb_Thermohydraulique_Concentration pb
 Domaine dom
 
 # BEGIN MESH #
 lire_med family_names_from_group_names  dom mesh my_mesh.med
 dilate dom 1e-3
- transformer dom x-0.05 y-0.05 
-/* raffiner_isotrope dom
-raffiner_isotrope dom */
+ transformer dom x-0.05 y-0.05 extruder_en3  {  domaine  1 dom nb_tranches 2    direction 0 0 1e-2  } RegroupeBord dom bound { bound devant derriere } 
+
+/* raffiner_isotrope dom */
+
 # END MESH #
+
+
 # BEGIN PARTITION
 Partition dom
 {
-	Partition_tool tranche { tranches 2 1 }
+	Partition_tool metis { nb_parts 2  }
 	Larg_joint 2
 	zones_name DOM
 }
 End
 END PARTITION #
+
+Pb_Conduction_Concentration pb  dimension 3
 
 # BEGIN SCATTER
 Scatter DOM.Zones dom
@@ -35,29 +39,26 @@ Scheme_euler_implicit sch
 Read sch
 {
 	tinit 0
+	nb_pas_dt_max 3
 	tmax 99.999
 	dt_min 1.e-6
 	dt_max 0.1
 	dt_impr 0.001
 	dt_sauv 100
 	seuil_statio -1.e-8
-	nb_pas_dt_max 10000
-solveur implicite { solveur gmres { diag seuil 1e-19  nb_it_max 5 impr } 
-seuil_convergence_implicite 1e-4
+solveur implicite { solveur gmres { diag seuil 1e-14  nb_it_max 50 impr } 
+seuil_convergence_implicite 1e9 /* pas besoin d iterer  on a rendu le syteme affine */
 }
 facsec 1e5
 facsec_max 10.e5
 }
 
-Fluide_Incompressible fluide
+solide fluide
 Read fluide
 {
-	mu	Champ_Uniforme 1 1.85e-5
 	rho	Champ_Uniforme 1 2500.
 	lambda	Champ_Fonc_xyz dom 1 20.
 	Cp	Champ_Uniforme 1 1015.
-	beta_th	Champ_Uniforme 1 3.41e-3
-	beta_co	Champ_Uniforme 1 0.04
 }
 
 Constituant c
@@ -75,31 +76,10 @@ Discretize pb dis
 
 Read pb
 {
-	Navier_Stokes_standard
-	{
-		equation_non_resolue 1 
-	 	solveur_pression GCP { 
-			precond ssor { omega 1.500000 } 
-			seuil 1.000000e-10
-			impr 
-		}
-		convection { negligeable }
-		diffusion { negligeable }
-		initial_conditions
-		{
-			vitesse Champ_Uniforme 2 0. 0.
-		}
-		boundary_conditions
-		{
-			bound	paroi_fixe
-		}
-		
-	}
-	Convection_Diffusion_Temperature
+	conduction
 	{
 		equation_non_resolue 0 
 		diffusion { }
-		convection { negligeable  }
 		boundary_conditions 
 		{
  			bound	paroi_adiabatique
@@ -111,10 +91,9 @@ Read pb
 
 		sources { puissance_thermique champ_uniforme_morceaux dom 1 {  defaut 0.  centre 762.e6 } }
 	}
-	Convection_diffusion_Concentration
+	diffusion_Concentration
 	{
 		diffusion { negligeable }
-		convection { negligeable  }
 		
 		initial_conditions
 		{
@@ -149,10 +128,10 @@ qchimie qchimie periode 1e-8 numero_elem_sur_maitre 0
 qconv qconv periode 1e-8 numero_elem_sur_maitre 0
 q0 q0  periode 1e-8 numero_elem_sur_maitre 0
        tm tmoy periode 1e-8 numero_elem_sur_maitre 0 
-       T temperature  periode 1 segment 80 -0.05 0 0.05 0
+       T temperature  periode 1 segment 80 -0.05 0 5e-3   0.05 0 5e-3
 c c_som   periode 1e-8 position_like T
 }
-	format lata
+	format lml
 		fields dt_post 1
 		{
 			temperature	som

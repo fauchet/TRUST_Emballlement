@@ -33,7 +33,7 @@ END SCATTER #
 sous_zone centre 
 associer centre dom
 lire centre { fonction_sous_zone (x*x+y*y-5e-3*5e-3<0) }
-VEFPreP1B dis
+EF dis
 
 Scheme_euler_implicit sch
 Read sch

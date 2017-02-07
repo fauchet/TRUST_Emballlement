@@ -14,49 +14,42 @@
 *****************************************************************************/
 /////////////////////////////////////////////////////////////////////////////
 //
-// File      : Puissance_convection_base.h
+// File      : Pb_Conduction_Concentration.h
 // Directory : $EMBALLEMENT_ROOT/src
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef Puissance_convection_base_included
-#define Puissance_convection_base_included
+#ifndef Pb_Conduction_Concentration_included
+#define Pb_Conduction_Concentration_included
 
-#include <Source_base.h>
-#include <DoubleTab.h>
+#include <Probleme_base.h>
+#include <Conduction.h>
+#include <Diffusion_Concentration.h>
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// .DESCRIPTION : class Puissance_convection_base
+// .DESCRIPTION : class Pb_Conduction_Concentration
 //
-// <Description of class Puissance_convection_base>
+// <Description of class Pb_Conduction_Concentration>
 //
 /////////////////////////////////////////////////////////////////////////////
 
-class Puissance_convection_base : public Source_base
+class Pb_Conduction_Concentration : public Probleme_base
 {
 
-  Declare_base( Puissance_convection_base ) ;
+  Declare_instanciable( Pb_Conduction_Concentration ) ;
 
 public :
-  virtual DoubleTab& ajouter(DoubleTab& ) const;
-  virtual DoubleTab& calculer(DoubleTab& ) const;
-  virtual void mettre_a_jour(double temps);
-  virtual void completer();
-  virtual void contribuer_a_avec(const DoubleTab&, Matrice_Morse&) const ;
+  int nombre_d_equations() const;
+  const Equation_base& equation(int) const ;
+  Equation_base& equation(int);
+  void associer_milieu_base(const Milieu_base& mil);
 
 protected :
-  virtual void associer_zones(const Zone_dis& ,const Zone_Cl_dis& ) ;
-  virtual void associer_pb(const Probleme_base& ) ;
-  DoubleVect volumes_;
 
-  double  hconv_,epsilon_,Tamb_,Stefan_;
-  double rhocp_;
-
-  virtual void remplir_volumes() =0;
-  int implicite_,is_scheme_implicite_;
-  DoubleTab T_old_;
-  double temps_;
+  Conduction  eq_conduction_;
+  Diffusion_Concentration eq_concentration_;
 };
 
-#endif /* Puissance_convection_base_included */
+#endif /* Pb_Conduction_Concentration_included */
