@@ -39,6 +39,7 @@ Sortie& Puissance_emballement_base::printOn( Sortie& os ) const
 Entree& Puissance_emballement_base::readOn( Entree& is )
 {
 // Source_base::readOn( is );
+  temps_=-1;
   Param param(que_suis_je());
   param.ajouter("nom_champ",&nom_champ_,Param::REQUIRED); // XD_ADD_P chaine not_set
   param.ajouter("Hsei",&Hsei_,Param::REQUIRED); // XD_ADD_P double not_set
@@ -69,22 +70,25 @@ DoubleTab& Puissance_emballement_base::calculer(DoubleTab& resu) const
 }
 void Puissance_emballement_base::mettre_a_jour(double temps)
 {
-  const Champ_Generique_base& ch =equation().probleme().get_champ_post(nom_champ_);
-  Champ espace_stockage;
-  const Champ_base& champ_ecriture = ch.get_champ(espace_stockage);
-  const DoubleTab& S = champ_ecriture.valeurs();
-
-
-  int size=S.dimension(0);
-  assert(volumes_.size()==facteur_.size());
-  assert(size==facteur_.size());
-  double f=Hsei_*Wc_*dz_/rhocp_;
-  for (int i=0; i<size; i++)
+  if (!est_egal(temps,temps_))
     {
+      const Champ_Generique_base& ch =equation().probleme().get_champ_post(nom_champ_);
+      Champ espace_stockage;
+      const Champ_base& champ_ecriture = ch.get_champ(espace_stockage);
+      const DoubleTab& S = champ_ecriture.valeurs();
 
-      facteur_(i)= -S(i)*f;
+
+      int size=S.dimension(0);
+      assert(volumes_.size()==facteur_.size());
+      assert(size==facteur_.size());
+      double f=Hsei_*Wc_*dz_/rhocp_;
+      for (int i=0; i<size; i++)
+        {
+
+          facteur_(i)= -S(i)*f;
+        }
+      temps_=temps;
     }
-
 }
 
 void Puissance_emballement_base::completer()

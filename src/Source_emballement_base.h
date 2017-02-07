@@ -51,6 +51,9 @@ protected :
   double Asei_,Ea_;
 
   virtual void remplir_volumes() =0;
+  int is_scheme_implicite_;
+
+  double temps_;
 
 };
 

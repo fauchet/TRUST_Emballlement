@@ -14,49 +14,35 @@
 *****************************************************************************/
 /////////////////////////////////////////////////////////////////////////////
 //
-// File      : Puissance_convection_base.h
+// File      : Diffusion_Concentration.h
 // Directory : $EMBALLEMENT_ROOT/src
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef Puissance_convection_base_included
-#define Puissance_convection_base_included
+#ifndef Diffusion_Concentration_included
+#define Diffusion_Concentration_included
 
-#include <Source_base.h>
-#include <DoubleTab.h>
+#include <Convection_Diffusion_Concentration.h>
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// .DESCRIPTION : class Puissance_convection_base
+// .DESCRIPTION : class Diffusion_Concentration
 //
-// <Description of class Puissance_convection_base>
+// <Description of class Diffusion_Concentration>
 //
 /////////////////////////////////////////////////////////////////////////////
 
-class Puissance_convection_base : public Source_base
+class Diffusion_Concentration : public Convection_Diffusion_Concentration
 {
 
-  Declare_base( Puissance_convection_base ) ;
+  Declare_instanciable( Diffusion_Concentration ) ;
 
 public :
-  virtual DoubleTab& ajouter(DoubleTab& ) const;
-  virtual DoubleTab& calculer(DoubleTab& ) const;
-  virtual void mettre_a_jour(double temps);
-  virtual void completer();
-  virtual void contribuer_a_avec(const DoubleTab&, Matrice_Morse&) const ;
+  int nombre_d_operateurs() const;
+  void set_param(Param& param);
 
 protected :
-  virtual void associer_zones(const Zone_dis& ,const Zone_Cl_dis& ) ;
-  virtual void associer_pb(const Probleme_base& ) ;
-  DoubleVect volumes_;
 
-  double  hconv_,epsilon_,Tamb_,Stefan_;
-  double rhocp_;
-
-  virtual void remplir_volumes() =0;
-  int implicite_,is_scheme_implicite_;
-  DoubleTab T_old_;
-  double temps_;
 };
 
-#endif /* Puissance_convection_base_included */
+#endif /* Diffusion_Concentration_included */

@@ -14,49 +14,30 @@
 *****************************************************************************/
 /////////////////////////////////////////////////////////////////////////////
 //
-// File      : Puissance_convection_base.h
+// File      : Puissance_convection_PolyMAC.cpp
 // Directory : $EMBALLEMENT_ROOT/src
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef Puissance_convection_base_included
-#define Puissance_convection_base_included
+#include <Puissance_convection_PolyMAC.h>
+#include <Zone_VF.h>
+#include <Equation_base.h>
 
-#include <Source_base.h>
-#include <DoubleTab.h>
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// .DESCRIPTION : class Puissance_convection_base
-//
-// <Description of class Puissance_convection_base>
-//
-/////////////////////////////////////////////////////////////////////////////
+Implemente_instanciable( Puissance_convection_PolyMAC, "Puissance_convection_P0_PolyMAC", Puissance_convection_base ) ;
 
-class Puissance_convection_base : public Source_base
+Sortie& Puissance_convection_PolyMAC::printOn( Sortie& os ) const
 {
+  Puissance_convection_base::printOn( os );
+  return os;
+}
 
-  Declare_base( Puissance_convection_base ) ;
-
-public :
-  virtual DoubleTab& ajouter(DoubleTab& ) const;
-  virtual DoubleTab& calculer(DoubleTab& ) const;
-  virtual void mettre_a_jour(double temps);
-  virtual void completer();
-  virtual void contribuer_a_avec(const DoubleTab&, Matrice_Morse&) const ;
-
-protected :
-  virtual void associer_zones(const Zone_dis& ,const Zone_Cl_dis& ) ;
-  virtual void associer_pb(const Probleme_base& ) ;
-  DoubleVect volumes_;
-
-  double  hconv_,epsilon_,Tamb_,Stefan_;
-  double rhocp_;
-
-  virtual void remplir_volumes() =0;
-  int implicite_,is_scheme_implicite_;
-  DoubleTab T_old_;
-  double temps_;
-};
-
-#endif /* Puissance_convection_base_included */
+Entree& Puissance_convection_PolyMAC::readOn( Entree& is )
+{
+  Puissance_convection_base::readOn( is );
+  return is;
+}
+void Puissance_convection_PolyMAC::remplir_volumes()
+{
+  volumes_.ref(ref_cast(Zone_VF,equation().zone_dis().valeur()).volumes());
+}

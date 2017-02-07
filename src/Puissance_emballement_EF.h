@@ -14,49 +14,34 @@
 *****************************************************************************/
 /////////////////////////////////////////////////////////////////////////////
 //
-// File      : Puissance_convection_base.h
+// File      : Puissance_emballement_EF.h
 // Directory : $EMBALLEMENT_ROOT/src
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef Puissance_convection_base_included
-#define Puissance_convection_base_included
+#ifndef Puissance_emballement_EF_included
+#define Puissance_emballement_EF_included
 
-#include <Source_base.h>
-#include <DoubleTab.h>
+#include <Puissance_emballement_base.h>
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// .DESCRIPTION : class Puissance_convection_base
+// .DESCRIPTION : class Puissance_emballement_EF
 //
-// <Description of class Puissance_convection_base>
+// <Description of class Puissance_emballement_EF>
 //
 /////////////////////////////////////////////////////////////////////////////
 
-class Puissance_convection_base : public Source_base
+class Puissance_emballement_EF : public Puissance_emballement_base
 {
 
-  Declare_base( Puissance_convection_base ) ;
+  Declare_instanciable( Puissance_emballement_EF ) ;
 
 public :
-  virtual DoubleTab& ajouter(DoubleTab& ) const;
-  virtual DoubleTab& calculer(DoubleTab& ) const;
-  virtual void mettre_a_jour(double temps);
-  virtual void completer();
-  virtual void contribuer_a_avec(const DoubleTab&, Matrice_Morse&) const ;
 
 protected :
-  virtual void associer_zones(const Zone_dis& ,const Zone_Cl_dis& ) ;
-  virtual void associer_pb(const Probleme_base& ) ;
-  DoubleVect volumes_;
+  virtual void remplir_volumes() ;
 
-  double  hconv_,epsilon_,Tamb_,Stefan_;
-  double rhocp_;
-
-  virtual void remplir_volumes() =0;
-  int implicite_,is_scheme_implicite_;
-  DoubleTab T_old_;
-  double temps_;
 };
 
-#endif /* Puissance_convection_base_included */
+#endif /* Puissance_emballement_EF_included */

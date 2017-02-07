@@ -25,6 +25,7 @@
 #include <Equation_base.h>
 #include <Probleme_base.h>
 #include <Matrice_Morse.h>
+#include <Schema_Implicite_base.h>
 
 Implemente_base( Source_emballement_base, "Source_emballement_base", Source_base ) ;
 
@@ -39,6 +40,7 @@ Sortie& Source_emballement_base::printOn( Sortie& os ) const
 Entree& Source_emballement_base::readOn( Entree& is )
 {
 // Source_base::readOn( is );
+  temps_=-1;
   Param param(que_suis_je());
   param.ajouter("Ea",&Ea_,Param::REQUIRED);  // XD_ADD_P double not_set
   param.ajouter("Asei",&Asei_,Param::REQUIRED);  // XD_ADD_P double not_set
@@ -50,7 +52,9 @@ DoubleTab& Source_emballement_base::ajouter(DoubleTab& resu ) const
   assert(resu.dimension(0)==volumes_.size());
   assert(resu.dimension(0)==facteur_.size());
   int size=resu.dimension(0);
-  const DoubleTab& inco=equation().inconnue().valeurs();
+  // si on est en implicite on prend la valeur future
+  const DoubleTab& inco=equation().inconnue().futur(is_scheme_implicite_);
+  //const DoubleTab& inco=equation().inconnue().valeurs();
   for (int i=0; i<size; i++)
     resu(i)-=volumes_(i)*inco(i)*facteur_(i);
   return resu;
@@ -71,25 +75,30 @@ DoubleTab& Source_emballement_base::calculer(DoubleTab& resu) const
 }
 void Source_emballement_base::mettre_a_jour(double temps)
 {
-
-  assert(volumes_.size()==facteur_.size());
-  const DoubleTab& T =equation().probleme().get_champ("Temperature").valeurs();
-  int size=T.dimension(0);
-  double R=8.314;
-  for (int i=0; i<size; i++)
+  if (!est_egal(temps,temps_))
     {
+      assert(volumes_.size()==facteur_.size());
+      const DoubleTab& T =equation().probleme().get_champ("Temperature").valeurs();
+      int size=T.dimension(0);
+      double R=8.314;
+      for (int i=0; i<size; i++)
+        {
 
-      facteur_(i)=Asei_*exp(-Ea_/R/T(i));
+          facteur_(i)=Asei_*exp(-Ea_/R/T(i));
+        }
+      temps_=temps;
     }
-
 }
 
 void Source_emballement_base::completer()
 {
   remplir_volumes();
   facteur_.resize(volumes_.size());
-}
 
+  is_scheme_implicite_=0;
+  if (sub_type(Schema_Implicite_base,equation().probleme().schema_temps()))
+    is_scheme_implicite_=1;
+}
 void Source_emballement_base::associer_zones(const Zone_dis& zdis,const Zone_Cl_dis& zcldis)
 {
   //  Source_base::associer_zones(zdis,zcldis);

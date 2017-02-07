@@ -1,0 +1,517 @@
+parametres {
+	titre "Emballement 2D"
+	auteur "fauchet"
+	  casTest . VEF.data    jdd en annexe  
+	 casTest . EF.data    
+	 casTest . VEF_3D.data    
+	}
+Chapitre {
+	titre "Convergence"
+	# definition figure 0
+	Figure {
+		titre "Evolution of residue"
+		labelX "TIME"
+		labelY "residu=max|Ri|"
+		logY True
+		inclureDescCourbes 0
+                 Courbe {
+			fichier VEF.dt_ev
+			colonnes ($1) ($4)
+			style linespoints
+		}
+		 Courbe {
+			fichier EF.dt_ev
+			colonnes ($1) ($4)
+			style linespoints
+		}
+		 Courbe {
+			fichier VEF_3D.dt_ev
+			colonnes ($1) ($4)
+			style linespoints
+		}
+			}
+}
+Chapitre {
+	titre "Visualization via VisIt"
+	# definition figure 1
+	Visu {
+		titre "MESH"
+		mesh VEF.lata dom
+	}
+	# definition figure 2
+	Visu {
+		titre "TEMPERATURE SOM"
+		pseudocolor VEF.lata dom TEMPERATURE SOM
+	}
+	# definition figure 3
+	Visu {
+		titre "CONCENTRATION SOM"
+		pseudocolor VEF.lata dom CONCENTRATION SOM
+	}
+}
+Chapitre {
+	titre "Comparaison TRUST VEF et Comsol"
+	# definition figure 4
+	Figure {
+		titre "avancement MOY"
+		labelX "TIME"
+		labelY ""
+		inclureDescCourbes 0
+		Courbe {
+			legende VEF 
+			fichier VEF_CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+		}
+		Courbe {
+			legende Comsol
+			fichier comsol.txt
+			colonnes 1 2
+			style lines
+		}
+	}
+	# definition figure 7
+	Figure {
+		titre "TMOY"
+		labelX "TIME"
+		labelY "TMOY"
+		inclureDescCourbes 0
+		Courbe {
+			legende VEF
+			fichier VEF_TM.son
+			style lines
+		}
+		Courbe {
+			legende Comsol
+			fichier comsol.txt
+			colonnes 1 3
+			style lines
+		}
+	}
+	# definition figure 5
+	Figure {
+		titre "Q"
+		labelX "TIME"
+		labely W
+		logY True
+		inclureDescCourbes 0
+		Courbe {
+			legende qchimie
+			fichier VEF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende "-QCONV"
+			fichier VEF_QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende "Q0"
+			fichier VEF_Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol
+			fichier comsol.txt
+			colonnes 1 7
+			style lines
+		}
+		Courbe {
+			legende -QCONV comsol
+			fichier comsol.txt
+			colonnes 1 5
+			style lines
+		}
+		Courbe {
+			legende Q0 comsol
+			fichier comsol.txt
+			colonnes 1 4
+			style lines
+		}
+	}
+	# definition figure 6
+	Figure {
+		titre "Zoom Qchimie"
+		rangeX 0 20
+		rangeY 1e4 1e6
+		labelX "TIME"
+		labely W
+		logY True
+		inclureDescCourbes 0
+		Courbe {
+			legende qchimie
+			fichier VEF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol
+			fichier comsol.txt
+			colonnes 1 6
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol v2
+			fichier comsol.txt
+			colonnes 1 7
+			style lines
+		}
+	}
+	
+	# definition figure 8
+	Figure {
+		titre coupe T
+		labelX mm
+		labelY ""
+		inclureDescCourbes 0
+                		Courbe {
+			legende comsol 2s
+			fichier T_CoupesTransverse_instant_2s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 2s
+			segment VEF T 2.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+               		Courbe {
+			legende comsol 5s
+			fichier T_CoupesTransverse_instant_5s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 5s
+			segment VEF T 5.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+               		Courbe {
+			legende comsol 100s
+			fichier T_CoupesTransverse_instant_100s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 100s
+			segment VEF T 100.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+               	}
+	# definition figure 9
+	Figure {
+		titre Alpha
+		labelX mm
+		labelY ""
+		inclureDescCourbes 0
+                		Courbe {
+			legende comsol 2s
+			fichier alpha_CoupesTransverse_instant_2s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 2s
+			segment VEF C 2.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                		Courbe {
+			legende comsol 5s
+			fichier alpha_CoupesTransverse_instant_5s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 5s
+			segment VEF C 5.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                		Courbe {
+			legende comsol 100s
+			fichier alpha_CoupesTransverse_instant_100s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende VEF 100s
+			segment VEF C 100.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                	}
+}
+Chapitre {
+	titre "Comparaison discretisations TRUST"
+	# definition figure 4
+	Figure {
+		titre "avancement MOY"
+		labelX "TIME"
+		labelY ""
+        inclureDescCourbes 0
+        		Courbe {
+			legende VEF
+			fichier VEF_CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+               }
+        		Courbe {
+			legende EF
+			fichier EF_CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+               }
+        		Courbe {
+			legende VEF_3D
+			fichier VEF_3D_CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+               }
+        		
+	}
+	# definition figure 7
+	Figure {
+		titre "TMOY"
+		labelX "TIME"
+		labelY "TMOY"
+        inclureDescCourbes 0
+        		Courbe {
+			legende VEF
+			fichier VEF_TM.son
+			style lines
+		}
+				Courbe {
+			legende EF
+			fichier EF_TM.son
+			style lines
+		}
+				Courbe {
+			legende VEF_3D
+			fichier VEF_3D_TM.son
+			style lines
+		}
+			}
+	# definition figure 5
+	Figure {
+		titre "Q"
+		labelX "TIME"
+		labely W
+		logY True
+        inclureDescCourbes 0
+        		Courbe {
+			legende qchimie VEF
+			fichier VEF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende -QCONV VEF
+			fichier VEF_QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q0 VEF
+			fichier VEF_Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
+			legende qchimie EF
+			fichier EF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende -QCONV EF
+			fichier EF_QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q0 EF
+			fichier EF_Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
+			legende qchimie VEF_3D
+			fichier VEF_3D_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende -QCONV VEF_3D
+			fichier VEF_3D_QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q0 VEF_3D
+			fichier VEF_3D_Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+			}
+	# definition figure 6
+	Figure {
+		titre "Zoom Qchimie"
+		rangeX 0 20
+		 rangeY 1e4 auto
+		labelX "TIME"
+		labely W
+		logY True
+        inclureDescCourbes 0
+        		Courbe {
+			legende qchimie VEF
+			fichier VEF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
+			legende qchimie EF
+			fichier EF_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
+			legende qchimie VEF_3D
+			fichier VEF_3D_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+			}
+	
+	# definition figure 8
+	Figure {
+		titre coupe T
+		labelX mm
+		labelY ""
+        inclureDescCourbes 0
+                        		
+		Courbe {
+			legende VEF 2s
+			segment VEF T 2.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF 5s
+			segment VEF T 5.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF 100s
+			segment VEF T 100.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+                           		
+		Courbe {
+			legende EF 2s
+			segment EF T 2.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende EF 5s
+			segment EF T 5.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende EF 100s
+			segment EF T 100.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+                           		
+		Courbe {
+			legende VEF_3D 2s
+			segment VEF_3D T 2.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF_3D 5s
+			segment VEF_3D T 5.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF_3D 100s
+			segment VEF_3D T 100.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+           	}
+	# definition figure 9
+	Figure {
+		titre Alpha
+		labelX mm
+		labelY ""
+        inclureDescCourbes 0
+                        		Courbe {
+			legende VEF 2s
+			segment VEF C 2.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF 5s
+			segment VEF C 5.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF 100s
+			segment VEF C 100.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                        		Courbe {
+			legende EF 2s
+			segment EF C 2.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende EF 5s
+			segment EF C 5.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende EF 100s
+			segment EF C 100.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                        		Courbe {
+			legende VEF_3D 2s
+			segment VEF_3D C 2.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF_3D 5s
+			segment VEF_3D C 5.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF_3D 100s
+			segment VEF_3D C 100.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+        	}
+}

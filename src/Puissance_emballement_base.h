@@ -51,7 +51,7 @@ protected :
 
   Nom  nom_champ_;
   double  Hsei_,  Wc_ , dz_ ;
-  double rhocp_;
+  double rhocp_,temps_;
 
   virtual void remplir_volumes() =0;
 
