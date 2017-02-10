@@ -1,0 +1,8 @@
+#!/bin/bash
+sed "s/EF/VEFPreP1B/" EF.data > VEF.data
+python $TRUST_ROOT/bin/KSH/preprocessor.py Emballement.prm.P Emballement.prm
+
+
+sed "s/transformer dom x-0.05 y-0.05/transformer dom x-0.05 y-0.05 extruder_en3  {  domaine  1 dom nb_tranches 2    direction 0 0 1e-2  } RegroupeBord dom bound { bound devant derriere }/;s/Pb_Conduction_Concentration pb/Pb_Conduction_Concentration pb  dimension 3/; s/segment 80 -0.05 0 0.05 0/segment 80 -0.05 0 5e-3   0.05 0 5e-3/" VEF.data > VEF_3D.data
+
+
