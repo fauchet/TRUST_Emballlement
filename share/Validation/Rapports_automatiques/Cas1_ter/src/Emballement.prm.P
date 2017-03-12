@@ -1,0 +1,319 @@
+#Pset(__listdis__ VEF EF  )
+parametres {
+	titre "Emballement 2D modele non lineaire"
+	auteur "fauchet"
+         casTest . EF_s.data jdd en annexe
+	 #Pforeach  __dist__ (__listdis__) casTest . __dist__.data   
+	#Pendforeach(__dist__)
+}
+Chapitre {
+	titre "Convergence"
+	# definition figure 0
+	Figure {
+		titre "Evolution of residue"
+		labelX "TIME"
+		labelY "residu=max|Ri|"
+		logY True
+		inclureDescCourbes 0
+                #Pforeach  __dist__ (__listdis__) Courbe {
+			fichier __dist__.dt_ev
+			colonnes ($1) ($4)
+			style linespoints
+		}
+		#Pendforeach(__dist__)
+
+	}
+}
+#Pset(__dis__ VEF)
+Chapitre {
+	titre "Visualization via VisIt"
+	# definition figure 1
+	Visu {
+		titre "MESH"
+		mesh __dis__.lata dom
+	}
+	# definition figure 2
+	Visu {
+		titre "TEMPERATURE SOM"
+		pseudocolor __dis__.lata dom TEMPERATURE SOM
+	}
+	# definition figure 3
+	Visu {
+		titre "CONCENTRATION SOM"
+		pseudocolor __dis__.lata dom CONCENTRATION SOM
+	}
+}
+Chapitre {
+	titre "Comparaison TRUST __dis__ et Comsol"
+	# definition figure 4
+	Figure {
+		titre "avancement MOY"
+		labelX "TIME"
+		labelY ""
+		inclureDescCourbes 0
+		Courbe {
+			legende __dis__ 
+			fichier __dis___CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+		}
+		Courbe {
+			legende Comsol
+			fichier comsol.txt
+			colonnes 1 2
+			style lines
+		}
+	}
+	# definition figure 7
+	Figure {
+		titre "TMOY"
+		labelX "TIME"
+		labelY "TMOY"
+		inclureDescCourbes 0
+		Courbe {
+			legende __dis__
+			fichier __dis___TM.son
+			style lines
+		}
+		Courbe {
+			legende Comsol
+			fichier comsol.txt
+			colonnes 1 3
+			style lines
+		}
+	}
+	# definition figure 5
+	Figure {
+		titre "Q"
+		labelX "TIME"
+		labely W
+		logY True
+		inclureDescCourbes 0
+		Courbe {
+			legende qchimie
+			fichier __dis___QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende "-QCONV"
+			fichier __dis___QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende "Q0"
+			fichier __dis___Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol
+			fichier comsol.txt
+			colonnes 1 7
+			style lines
+		}
+		Courbe {
+			legende -QCONV comsol
+			fichier comsol.txt
+			colonnes 1 5
+			style lines
+		}
+		Courbe {
+			legende Q0 comsol
+			fichier comsol.txt
+			colonnes 1 4
+			style lines
+		}
+	}
+	# definition figure 6
+	Figure {
+		titre "Zoom Qchimie"
+		rangeX 0 20
+		rangeY 1e4 1e6
+		labelX "TIME"
+		labely W
+		logY True
+		inclureDescCourbes 0
+		Courbe {
+			legende qchimie
+			fichier __dis___QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol
+			fichier comsol.txt
+			colonnes 1 6
+			style lines
+		}
+		Courbe {
+			legende Q_chimie comsol v2
+			fichier comsol.txt
+			colonnes 1 7
+			style lines
+		}
+	}
+	
+	# definition figure 8
+	Figure {
+		titre coupe T
+		labelX mm
+		labelY ""
+		inclureDescCourbes 0
+                #Pforeach __t__ ( 2 5 100 )
+		Courbe {
+			legende comsol __t__s
+			fichier T_CoupesTransverse_instant___t__s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende __dis__ __t__s
+			segment __dis__ T __t__.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+               #Pendforeach(__t__)
+	}
+	# definition figure 9
+	Figure {
+		titre Alpha
+		labelX mm
+		labelY ""
+		inclureDescCourbes 0
+                #Pforeach __t__ ( 2 5 100 )
+		Courbe {
+			legende comsol __t__s
+			fichier alpha_CoupesTransverse_instant___t__s.txt
+			colonnes ($1) ($3)
+		}
+		Courbe {
+			legende __dis__ __t__s
+			segment __dis__ C __t__.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                #Pendforeach(__t__)
+	}
+}
+Chapitre {
+	titre "Comparaison discretisations TRUST"
+	# definition figure 4
+	Figure {
+		titre "avancement MOY"
+		labelX "TIME"
+		labelY ""
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+		Courbe {
+			legende __dis__
+			fichier __dis___CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+               }
+        #Pendforeach(__dis__)
+		
+	}
+	# definition figure 7
+	Figure {
+		titre "TMOY"
+		labelX "TIME"
+		labelY "TMOY"
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+		Courbe {
+			legende __dis__
+			fichier __dis___TM.son
+			style lines
+		}
+		#Pendforeach(__dis__)
+	}
+	# definition figure 5
+	Figure {
+		titre "Q"
+		labelX "TIME"
+		labely W
+		logY True
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+		Courbe {
+			legende qchimie __dis__
+			fichier __dis___QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende -QCONV __dis__
+			fichier __dis___QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q0 __dis__
+			fichier __dis___Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		#Pendforeach(__dis__)
+	}
+	# definition figure 6
+	Figure {
+		titre "Zoom Qchimie"
+		rangeX 0 20
+		 rangeY 1e4 auto
+		labelX "TIME"
+		labely W
+		logY True
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+		Courbe {
+			legende qchimie __dis__
+			fichier __dis___QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		#Pendforeach(__dis__)
+	}
+	
+	# definition figure 8
+	Figure {
+		titre coupe T
+		labelX mm
+		labelY ""
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+                #Pforeach __t__ ( 2 5 100 )
+		
+		Courbe {
+			legende __dis__ __t__s
+			segment __dis__ T __t__.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       #Pendforeach(__t__)
+    #Pendforeach(__dis__)
+	}
+	# definition figure 9
+	Figure {
+		titre Alpha
+		labelX mm
+		labelY ""
+        inclureDescCourbes 0
+        #Pforeach __dis__ ( __listdis__)
+                #Pforeach __t__ ( 2 5 100 )
+		Courbe {
+			legende __dis__ __t__s
+			segment __dis__ C __t__.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    #Pendforeach(__t__)
+    #Pendforeach(__dis__)
+	}
+}
+Chapter {
+Title "Computer performance"
+Tableau_performance {
+}
+}
+

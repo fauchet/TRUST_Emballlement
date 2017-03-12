@@ -7,7 +7,7 @@ Domaine dom
 # BEGIN MESH #
 lire_med family_names_from_group_names  dom mesh my_mesh.med
 dilate dom 1e-3
- transformer dom x-0.05 y-0.05 extruder_en3  {  domaine  1 dom nb_tranches 2    direction 0 0 1e-2  } RegroupeBord dom bound { bound devant derriere } 
+ transformer dom x-0.05 y-0.05 
 
 /* raffiner_isotrope dom */
 
@@ -24,7 +24,7 @@ Partition dom
 End
 END PARTITION #
 
-Pb_Conduction_Concentration pb  dimension 3
+Pb_Conduction_Concentration pb
 
 # BEGIN SCATTER
 Scatter DOM.Zones dom
@@ -33,7 +33,7 @@ END SCATTER #
 sous_zone centre 
 associer centre dom
 lire centre { fonction_sous_zone (x*x+y*y-5e-3*5e-3<0) }
-VEFPreP1B dis
+EF dis
 
 Scheme_euler_implicit sch
 Read sch
@@ -42,7 +42,7 @@ Read sch
 	nb_pas_dt_max 3
 	tmax 99.999
 	dt_min 1.e-6
-	dt_max 0.1
+	dt_max 0.1e-0
 	dt_impr 0.001
 	dt_sauv 100
 	seuil_statio -1.e-8
@@ -89,7 +89,7 @@ Read pb
 		sources { puissance_emballement { nom_champ source_c Hsei 514. Wc 6.104e5 dz 1e-0 } }
 		sources { puissance_convection {  hconv 5.e3 epsilon 0.8e3 Tamb 298.15 Stefan 5.6704e-8 } }
 
-		sources { puissance_thermique champ_uniforme_morceaux dom 1 {  defaut 0.  centre 762.e6 } }
+		sources { puissance_thermique champ_uniforme_morceaux dom 1 {  defaut 0.  centre 431.8e6 } }
 	}
 	diffusion_Concentration
 	{
@@ -103,8 +103,11 @@ Read pb
 		{
 			bound paroi
 		}
-		sources { source_emballement { lineaire { Ea 1.3508e5 Asei 1.667e15 } } }
-	}
+
+		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell champ_fonc_tabule 1 concentration { 3 -1 0 100 1 1 1 } 
+                                                                          lnAcell champ_fonc_tabule  1 concentration { 3 -1 0 10 15 15 30 }
+			 }  } }
+		}
 
 	Post_processing
 	{
@@ -128,7 +131,7 @@ qchimie qchimie periode 1e-8 numero_elem_sur_maitre 0
 qconv qconv periode 1e-8 numero_elem_sur_maitre 0
 q0 q0  periode 1e-8 numero_elem_sur_maitre 0
        tm tmoy periode 1e-8 numero_elem_sur_maitre 0 
-       T temperature  periode 1 segment 80 -0.05 0 5e-3   0.05 0 5e-3
+       T temperature  periode 1 segment 80 -0.05 0 0.05 0
 c c_som   periode 1e-8 position_like T
 }
 	format lml
@@ -137,6 +140,8 @@ c c_som   periode 1e-8 position_like T
 			temperature	som
 			Concentration	som
 /*			source_c
+lnAcell elem
+eAcell elem
 			source_T */
 		}
 	}

@@ -23,6 +23,7 @@
 #define Source_emballement_base_included
 
 #include <Source_base.h>
+#include <Champ_Don.h>
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -53,8 +54,11 @@ protected :
   virtual void remplir_volumes() =0;
   int is_scheme_implicite_;
 
-  double temps_;
+  int modele_numero_;
 
+  double temps_;
+  double kb_;
+  Champ_Don lnAcell_,Eacell_;
 };
 
 #endif /* Source_emballement_base_included */

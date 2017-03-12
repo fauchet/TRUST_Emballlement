@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+# on transfrome les donnees pour les mettre en fonction de c puis comme il faut pour trust 
+
+traite()
+{
+file=$1
+awk 'END {printf("%s ",NR)}' $file
+awk '{print (1-$1,$2)}' $file  | sort -n | awk '{printf("%s ", $1) } END {printf (" /* suite */ ")}' 
+awk '{print (1-$1,$2)}' $file  | sort -n | awk '{printf("%s ", $2) } END {printf (" /* fin */ ")}' 
+}
+inA=`traite lnACell.txt`
+chEa=`traite Eacell_fAlpha.txt`
+
+
+sed "s?eAcell champ_fonc_tabule 1 concentration { 3 -1 0 100 1 1 1 }?eAcell champ_fonc_tabule 1 concentration { $chEa }?;
+     s?lnAcell champ_fonc_tabule  1 concentration { 3 -1 0 10 15 15 30 }?lnAcell champ_fonc_tabule  1 concentration { $inA }?" EF_s.data > EF.data
+
+
+sed "s/EF/VEFPreP1B/" EF.data > VEF.data
+python $TRUST_ROOT/bin/KSH/preprocessor.py Emballement.prm.P Emballement.prm
+
+
+sed "s/transformer dom x-0.05 y-0.05/transformer dom x-0.05 y-0.05 extruder_en3  {  domaine  1 dom nb_tranches 2    direction 0 0 1e-2  } RegroupeBord dom bound { bound devant derriere }/;s/Pb_Conduction_Concentration pb/Pb_Conduction_Concentration pb  dimension 3/; s/segment 80 -0.05 0 0.05 0/segment 80 -0.05 0 5e-3   0.05 0 5e-3/" VEF.data > VEF_3D.data
+
+

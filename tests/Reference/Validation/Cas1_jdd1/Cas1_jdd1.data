@@ -137,7 +137,7 @@ Read pb
 		{
 			Gauche paroi
 		}
-		sources { source_emballement { Ea 1.3508e5 Asei 1.667e15 } }
+		sources { source_emballement  { lineaire { Ea 1.3508e5 Asei 1.667e15 } } }
 	}
 
 	Post_processing
