@@ -23,7 +23,7 @@
 #define Source_emballement_base_included
 
 #include <Source_base.h>
-#include <Champ_Don.h>
+#include <Table.h>
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -58,7 +58,8 @@ protected :
 
   double temps_;
   double kb_;
-  Champ_Don lnAcell_,Eacell_;
+  Table table_lnAcell_,table_Eacell_;
+  int avec_relaxation_;
 };
 
 #endif /* Source_emballement_base_included */

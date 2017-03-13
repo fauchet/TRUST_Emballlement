@@ -3,6 +3,7 @@ parametres {
 	auteur "fauchet"
          casTest . EF_s.data jdd en annexe
 	  casTest . VEF.data   
+	 casTest . VEF_relax.data   
 	 casTest . EF.data   
 	}
 Chapitre {
@@ -16,6 +17,11 @@ Chapitre {
 		inclureDescCourbes 0
                  Courbe {
 			fichier VEF.dt_ev
+			colonnes ($1) ($4)
+			style linespoints
+		}
+		 Courbe {
+			fichier VEF_relax.dt_ev
 			colonnes ($1) ($4)
 			style linespoints
 		}
@@ -252,6 +258,12 @@ Chapitre {
 			style lines
                }
         		Courbe {
+			legende VEF_relax
+			fichier VEF_relax_CMOY.son
+			colonnes ($1) (1-$2)
+			style lines
+               }
+        		Courbe {
 			legende EF
 			fichier EF_CMOY.son
 			colonnes ($1) (1-$2)
@@ -268,6 +280,11 @@ Chapitre {
         		Courbe {
 			legende VEF
 			fichier VEF_TM.son
+			style lines
+		}
+				Courbe {
+			legende VEF_relax
+			fichier VEF_relax_TM.son
 			style lines
 		}
 				Courbe {
@@ -298,6 +315,24 @@ Chapitre {
 		Courbe {
 			legende Q0 VEF
 			fichier VEF_Q0.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
+			legende qchimie VEF_relax
+			fichier VEF_relax_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende -QCONV VEF_relax
+			fichier VEF_relax_QCONV.son
+			colonnes ($1) (-$2*2500*1015.)
+			style lines
+		}
+		Courbe {
+			legende Q0 VEF_relax
+			fichier VEF_relax_Q0.son
 			colonnes ($1) ($2*2500*1015.)
 			style lines
 		}
@@ -336,6 +371,12 @@ Chapitre {
 			style lines
 		}
 				Courbe {
+			legende qchimie VEF_relax
+			fichier VEF_relax_QCHIMIE.son
+			colonnes ($1) ($2*2500*1015.)
+			style lines
+		}
+				Courbe {
 			legende qchimie EF
 			fichier EF_QCHIMIE.son
 			colonnes ($1) ($2*2500*1015.)
@@ -367,6 +408,27 @@ Chapitre {
 		Courbe {
 			legende VEF 100s
 			segment VEF T 100.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+                           		
+		Courbe {
+			legende VEF_relax 2s
+			segment VEF_relax T 2.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF_relax 5s
+			segment VEF_relax T 5.
+			colonnes ($1+0.05)*1e3 $2
+			style lines
+		}
+       		
+		Courbe {
+			legende VEF_relax 100s
+			segment VEF_relax T 100.
 			colonnes ($1+0.05)*1e3 $2
 			style lines
 		}
@@ -413,6 +475,24 @@ Chapitre {
     		Courbe {
 			legende VEF 100s
 			segment VEF C 100.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+                        		Courbe {
+			legende VEF_relax 2s
+			segment VEF_relax C 2.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF_relax 5s
+			segment VEF_relax C 5.
+			colonnes ($1+0.05)*1e3 (1-$2)
+			style lines
+		}
+    		Courbe {
+			legende VEF_relax 100s
+			segment VEF_relax C 100.
 			colonnes ($1+0.05)*1e3 (1-$2)
 			style lines
 		}

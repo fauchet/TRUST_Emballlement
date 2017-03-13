@@ -28,7 +28,8 @@
 #include <Schema_Implicite_base.h>
 #include <Discretisation_base.h>
 #include <Champ_Fonc_Tabule.h>
-
+#include <Champ_Don.h>
+#include <EFichier.h>
 
 Implemente_base( Source_emballement_base, "Source_emballement_base", Source_base ) ;
 
@@ -44,6 +45,8 @@ Entree& Source_emballement_base::readOn( Entree& is )
 {
 // Source_base::readOn( is );
   temps_=-1;
+  Nom lnAcell,Eacell;
+  avec_relaxation_=0;
   Param param(que_suis_je());
   Param& param_lineaire =param.ajouter_param("lineaire") ;// XD_ADD_P emballement_lineaire  modele lineaire
   Param& param_non_lineaire = param.ajouter_param("non_lineaire") ;// XD_ADD_P emballement_non_lineaire  modele lineaire
@@ -52,9 +55,9 @@ Entree& Source_emballement_base::readOn( Entree& is )
   param_lineaire.ajouter("Asei",&Asei_,Param::REQUIRED);  // 2XD_ADD_P double not_set
 // 2XD emballement_non_lineaire objet_lecture nul 1 emballement non_lineaire
   param_non_lineaire.ajouter("kb",&kb_,Param::REQUIRED);  // 2XD_ADD_P double not_set
-  param_non_lineaire.ajouter("lnAcell",&lnAcell_,Param::REQUIRED);  // 2XD_ADD_P field_base not_set
-  param_non_lineaire.ajouter("Eacell",&Eacell_,Param::REQUIRED);  // 2XD_ADD_P field_base not_set
-
+  param_non_lineaire.ajouter("lnAcell_file",&lnAcell,Param::REQUIRED);  // 2XD_ADD_P chaine not_set
+  param_non_lineaire.ajouter("Eacell_file",&Eacell,Param::REQUIRED);  // 2XD_ADD_P chaine not_set
+  param_non_lineaire.ajouter_flag("test_relaxation",&avec_relaxation_); // 2XD_ADD_P flag pour tester la relaxation
   param.lire_avec_accolades(is);
 
 
@@ -71,10 +74,13 @@ Entree& Source_emballement_base::readOn( Entree& is )
   else
     {
       modele_numero_=1;
-      lnAcell_.valeur().nommer("lnAcell");
-      Eacell_.valeur().nommer("Eacell");
-      champs_compris_.ajoute_champ(lnAcell_);
-      champs_compris_.ajoute_champ(Eacell_);
+      EFichier flnAcell(lnAcell);
+      flnAcell >> table_lnAcell_;
+
+      EFichier fEacell(Eacell);
+      fEacell >> table_Eacell_;
+      //table_lnAcell_=ref_cast(Champ_Fonc_Tabule,lnAcell.valeur()).table();
+      //table_Eacell_=ref_cast(Champ_Fonc_Tabule,Eacell.valeur()).table();
     }
   return is;
 }
@@ -126,18 +132,17 @@ void Source_emballement_base::mettre_a_jour(double temps)
       else
         {
           const DoubleTab& c =equation().inconnue().valeurs();
-          lnAcell_.mettre_a_jour(temps);
-          lnAcell_.valeur().changer_temps(temps);
-          Eacell_.mettre_a_jour(temps);
-          Eacell_.valeur().changer_temps(temps);
-          const Table& tab_inA=ref_cast(Champ_Fonc_Tabule,lnAcell_.valeur()).table();
-          const Table& tab_Ea=ref_cast(Champ_Fonc_Tabule,Eacell_.valeur()).table();
           for (int i=0; i<size; i++)
             {
               double ci=c(i);
-              double inA=tab_inA.val(ci);
-              double Ea=tab_Ea.val(ci);
-              facteur_(i)=exp(inA-Ea/(kb_*T(i)))/(c(i)+DMINFLOAT);
+              double ai=1-ci;
+              double lnA=table_lnAcell_.val(ai);
+              double Ea=table_Eacell_.val(ai);
+              facteur_(i)=exp(lnA-Ea/(kb_*T(i)))/(dabs(c(i))+DMINFLOAT);
+              if (avec_relaxation_)
+                {
+                  facteur_(i)*=(1 -tanh(40.*(ai-0.85)))*0.5 ;
+                }
             }
 
         }
@@ -150,23 +155,12 @@ void Source_emballement_base::completer()
   remplir_volumes();
 
 
-  const Equation_base& eqn=equation();
-
   facteur_.resize(volumes_.size());
 
   is_scheme_implicite_=0;
   if (sub_type(Schema_Implicite_base,equation().probleme().schema_temps()))
     is_scheme_implicite_=1;
 
-
-  if (modele_numero_==1)
-    {
-
-      eqn.discretisation().nommer_completer_champ_physique(eqn.zone_dis(),"","%",lnAcell_,eqn.probleme());
-      eqn.discretisation().nommer_completer_champ_physique(eqn.zone_dis(),"","%",Eacell_,eqn.probleme());
-    }
-  else
-    assert(modele_numero_==0);
 }
 void Source_emballement_base::associer_zones(const Zone_dis& zdis,const Zone_Cl_dis& zcldis)
 {

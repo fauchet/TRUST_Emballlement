@@ -33,19 +33,19 @@ END SCATTER #
 sous_zone centre 
 associer centre dom
 lire centre { fonction_sous_zone (x*x+y*y-5e-3*5e-3<0) }
-EF dis
+VEFPreP1B dis
 
 Scheme_euler_implicit sch
 Read sch
 {
 	tinit 0
+	nb_pas_dt_max 3
 	tmax 99.999
 	dt_min 1.e-6
 	dt_max 0.1e-0
 	dt_impr 0.001
 	dt_sauv 100
 	seuil_statio -1.e-8
-	nb_pas_dt_max 10000
 solveur implicite { solveur gmres { diag seuil 1e-14  nb_it_max 50 impr } 
 seuil_convergence_implicite 1e9 /* pas besoin d iterer  on a rendu le syteme affine */
 }
@@ -104,8 +104,8 @@ Read pb
 			bound paroi
 		}
 
-		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell_file test_Ea.txt 
-                                                                          lnAcell_file test_lnA.txt 
+		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell_file Ea.txt 
+                                                                          lnAcell_file lnA.txt 
 			 }  } }
 		}
 
@@ -134,7 +134,7 @@ q0 q0  periode 1e-8 numero_elem_sur_maitre 0
        T temperature  periode 1 segment 80 -0.05 0 0.05 0
 c c_som   periode 1e-8 position_like T
 }
-	format lata
+	format lml
 		fields dt_post 1
 		{
 			temperature	som

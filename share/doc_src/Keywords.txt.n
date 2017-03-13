@@ -7,12 +7,12 @@
 |diffusion_concentration
 |dz
 |ea
-|eacell
+|eacell_file
 |hconv
 |hsei
-|inacell
 |kb
 |lineaire
+|lnacell_file
 |nom_champ
 |non_lineaire
 |pb_conduction_concentration
@@ -22,5 +22,6 @@
 |source_emballement
 |stefan
 |tamb
+|test_relaxation
 |wc
 |{

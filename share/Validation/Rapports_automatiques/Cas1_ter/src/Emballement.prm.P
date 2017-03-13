@@ -1,4 +1,4 @@
-#Pset(__listdis__ VEF EF  )
+#Pset(__listdis__ VEF VEF_relax EF   )
 parametres {
 	titre "Emballement 2D modele non lineaire"
 	auteur "fauchet"

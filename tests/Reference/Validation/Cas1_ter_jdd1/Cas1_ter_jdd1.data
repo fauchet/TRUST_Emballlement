@@ -104,8 +104,8 @@ Read pb
 			bound paroi
 		}
 
-		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell champ_fonc_tabule 1 concentration { 3 -1 0 100 1 1 1 } 
-                                                                          lnAcell champ_fonc_tabule  1 concentration { 3 -1 0 10 15 15 30 }
+		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell_file test_Ea.txt 
+                                                                          lnAcell_file test_lnA.txt 
 			 }  } }
 		}
 
@@ -140,8 +140,6 @@ c c_som   periode 1e-8 position_like T
 			temperature	som
 			Concentration	som
 /*			source_c
-lnAcell elem
-eAcell elem
 			source_T */
 		}
 	}
