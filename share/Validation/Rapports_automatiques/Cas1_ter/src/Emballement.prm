@@ -5,7 +5,33 @@ parametres {
 	  casTest . VEF.data   
 	 casTest . VEF_relax.data   
 	 casTest . EF.data   
+	         casTest . test.data 
+}
+Chapter { 
+	titre verification source non lineaire
+	description on impose c de varier de 1 à 0, et T=500.
+	Figure {
+		titre "-Source(alpha)"
+		labelX "alpha"
+		labelY ""
+		
+		inclureDescCourbes 0
+                Courbe {
+			segment test SOURCE_C
+			colonnes ($1+0.05)/0.1 (-$2)
+			style lines
+			legend calcul
+		}
+	  Courbe {
+			file Cell.txt
+			colonnes ($1) (exp($2-$4/500./8.67e-5))
+			style lines
+			legend expression from data
+		}
+		
+
 	}
+}
 Chapitre {
 	titre "Convergence"
 	# definition figure 0

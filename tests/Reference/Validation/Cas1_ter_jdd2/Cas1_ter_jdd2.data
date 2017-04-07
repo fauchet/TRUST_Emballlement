@@ -7,9 +7,7 @@ Domaine dom
 # BEGIN MESH #
 lire_med family_names_from_group_names  dom mesh my_mesh.med
 dilate dom 1e-3
- transformer dom x-0.05 y-0.05 
-
-/* raffiner_isotrope dom */
+transformer dom x-0.05 y-0.05 
 
 # END MESH #
 
@@ -93,6 +91,7 @@ Read pb
 	}
 	diffusion_Concentration
 	{
+		equation_non_resolue 0 
 		diffusion { negligeable }
 		
 		initial_conditions
@@ -104,36 +103,39 @@ Read pb
 			bound paroi
 		}
 
-		sources { source_emballement { non_lineaire { kb  8.67e-5 eAcell_file Ea.txt 
-                                                                          lnAcell_file lnA.txt 
+		sources { source_emballement { non_lineaire { kb  8.67e-5 
+							     eAcell_file Ea.txt 
+                                                             lnAcell_file lnA.txt 
 			 }  } }
 		}
 
 	Post_processing
 	{
-Definition_champs { 
+      Definition_champs { 
 	source_c operateur_eqn { numero_source 0 sources { refchamp { pb_champ pb concentration  } } }
+
 	source_T operateur_eqn { numero_source 0 sources { refchamp { pb_champ pb temperature } } }
         tmoy reduction_0D { methode moyenne_ponderee sources { refchamp { pb_champ pb temperature } } }
         cmoy reduction_0D { methode moyenne_ponderee sources { refchamp { pb_champ pb concentration } } }
 
 	qchimie reduction_0D { methode somme_ponderee 
-	sources { operateur_eqn { numero_source 0 sources { refchamp { pb_champ pb temperature } } } } }
-		qconv reduction_0D { methode somme_ponderee 
-	sources { operateur_eqn { numero_source 1 sources { refchamp { pb_champ pb temperature } } } } }
-q0 reduction_0D { methode somme_ponderee 
-	sources { operateur_eqn { numero_source 2 sources { refchamp { pb_champ pb temperature } } } } }
+      	          sources { operateur_eqn { numero_source 0 sources { refchamp { pb_champ pb temperature } } } } }
+	qconv reduction_0D { methode somme_ponderee 
+	          sources { operateur_eqn { numero_source 1 sources { refchamp { pb_champ pb temperature } } } } }
+        q0 reduction_0D { methode somme_ponderee 
+	      sources { operateur_eqn { numero_source 2 sources { refchamp { pb_champ pb temperature } } } } }
 	c_som interpolation { localisation som sources { refchamp { pb_champ pb concentration } } }
-}
-	probes {
-       cmoy  cmoy periode 1e-8 numero_elem_sur_maitre 0 
-qchimie qchimie periode 1e-8 numero_elem_sur_maitre 0
-qconv qconv periode 1e-8 numero_elem_sur_maitre 0
-q0 q0  periode 1e-8 numero_elem_sur_maitre 0
-       tm tmoy periode 1e-8 numero_elem_sur_maitre 0 
-       T temperature  periode 1 segment 80 -0.05 0 0.05 0
-c c_som   periode 1e-8 position_like T
-}
+       }
+      probes {
+         cmoy  cmoy periode 1e-8 numero_elem_sur_maitre 0 
+         qchimie qchimie periode 1e-8 numero_elem_sur_maitre 0
+         qconv qconv periode 1e-8 numero_elem_sur_maitre 0
+         q0 q0  periode 1e-8 numero_elem_sur_maitre 0
+         tm tmoy periode 1e-8 numero_elem_sur_maitre 0 
+         T temperature  periode 1 segment 80 -0.05 0 0.05 0
+         c c_som   periode 1e-8 position_like T
+         source_c source_c   periode 1e-8 position_like T
+       }
 	format lml
 		fields dt_post 1
 		{

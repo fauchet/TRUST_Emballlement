@@ -18,6 +18,9 @@ traite Eacell_fAlpha.txt > Ea.txt
 
 sed "s?test_Ea?Ea?g;s?test_lnA?lnA?g" EF_s.data > EF.data
 
+sed "s/seuil_statio -1/seuil_statio 1/; s/equation_non_resolue 0/equation_non_resolue 1/;s/dilate/raffiner_isotrope dom raffiner_isotrope dom  dilate/;s/Champ_Uniforme 1 0.95/champ_fonc_xyz dom  1 1-(x+0.05)*10./; s/Champ_Uniforme 1 298.15/Champ_Uniforme 1 500./i; s/segment 80 /segment 180 /" EF.data > test.data
+paste lnACell.txt Eacell_fAlpha.txt > Cell.txt
+
 
 sed "s/EF/VEFPreP1B/" EF.data > VEF.data
 sed "s?kb?test_relaxation kb?g" VEF.data > VEF_relax.data
