@@ -33,7 +33,7 @@
 
 Implemente_base( Source_emballement_base, "Source_emballement_base", Source_base ) ;
 
-// XD source_emballement source_base source_emballement 1 not_set
+// XD source_emballement source_base source_emballement 1 term for equation of concentration
 
 Sortie& Source_emballement_base::printOn( Sortie& os ) const
 {
@@ -49,15 +49,15 @@ Entree& Source_emballement_base::readOn( Entree& is )
   avec_relaxation_=0;
   Param param(que_suis_je());
   Param& param_lineaire =param.ajouter_param("lineaire") ;// XD_ADD_P emballement_lineaire  modele lineaire
-  Param& param_non_lineaire = param.ajouter_param("non_lineaire") ;// XD_ADD_P emballement_non_lineaire  modele lineaire
-// 2XD emballement_lineaire objet_lecture nul 1 emballement lineaire
+  Param& param_non_lineaire = param.ajouter_param("non_lineaire") ;// XD_ADD_P emballement_non_lineaire  modele non lineaire
+// 2XD emballement_lineaire objet_lecture nul 1 emballement lineaire. expression $-Asei*exp(-Ea/R T)$ with $R=8.314$
   param_lineaire.ajouter("Ea",&Ea_,Param::REQUIRED);  // 2XD_ADD_P double not_set
   param_lineaire.ajouter("Asei",&Asei_,Param::REQUIRED);  // 2XD_ADD_P double not_set
-// 2XD emballement_non_lineaire objet_lecture nul 1 emballement non_lineaire
+// 2XD emballement_non_lineaire objet_lecture nul 1 emballement non lineaire. expression   $-exp(lnAcell (alpha) -  Eacell(alpha) /(kB *T) )$ with $alpha=1-c$
   param_non_lineaire.ajouter("kb",&kb_,Param::REQUIRED);  // 2XD_ADD_P double not_set
-  param_non_lineaire.ajouter("lnAcell_file",&lnAcell,Param::REQUIRED);  // 2XD_ADD_P chaine not_set
-  param_non_lineaire.ajouter("Eacell_file",&Eacell,Param::REQUIRED);  // 2XD_ADD_P chaine not_set
-  param_non_lineaire.ajouter_flag("test_relaxation",&avec_relaxation_); // 2XD_ADD_P flag pour tester la relaxation
+  param_non_lineaire.ajouter("lnAcell_file",&lnAcell,Param::REQUIRED);  // 2XD_ADD_P chaine name of the file with lnAcell definition
+  param_non_lineaire.ajouter("Eacell_file",&Eacell,Param::REQUIRED);  // 2XD_ADD_P chaine name of the file with Eacell definition
+  param_non_lineaire.ajouter_flag("test_relaxation",&avec_relaxation_); // 2XD_ADD_P flag Optional:  correction $(1- tanh(40* (alpha-0.8) ))/2$
   param.lire_avec_accolades(is);
 
 

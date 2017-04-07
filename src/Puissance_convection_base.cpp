@@ -30,7 +30,7 @@
 #include <Schema_Implicite_base.h>
 
 Implemente_base( Puissance_convection_base, "Puissance_convection_base", Source_base ) ;
-// XD  puissance_convection source_base puissance_convection 1 source pour emballement
+// XD  puissance_convection source_base puissance_convection 1 source pour emballement $ 2* [ (hconv* (Tamb-T  ) ) +  (\epsilon*Stefan*  (Tamb^4 -T^4  ) )  ]$
 Sortie& Puissance_convection_base::printOn( Sortie& os ) const
 {
   Source_base::printOn( os );

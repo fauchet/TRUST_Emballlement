@@ -29,7 +29,7 @@
 #include <Champ_Generique_base.h>
 
 Implemente_base( Puissance_emballement_base, "Puissance_emballement_base", Source_base ) ;
-// XD puissance_emballement source_base puissance_emballement 1 not_set
+// XD puissance_emballement source_base puissance_emballement 1 -S * factor; S found by nom_champ; expression factor= $Hsei * Wc * dz  $
 Sortie& Puissance_emballement_base::printOn( Sortie& os ) const
 {
   Source_base::printOn( os );
